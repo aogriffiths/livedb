@@ -11,8 +11,11 @@ exports.client = (snapshotDb, redis = redisLib.createClient(), redisObserver, ex
   # This is a set.
   streams = {}
   nextStreamId = 0
-
-  if redisObserver.constructor is Object
+  
+  if ! redisObserver 
+    redisObserver = redisLib.createClient redis.port, redis.host, redis.options
+    redisObserver.auth redis.auth_pass if redis.auth_pass
+  else if redisObserver.constructor is Object
     extraDbs = redisObserver
     redisObserver = redisLib.createClient redis.port, redis.host, redis.options
     redisObserver.auth redis.auth_pass if redis.auth_pass
